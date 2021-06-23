@@ -1,0 +1,15 @@
+/* Reset */
+@import 'tailwindcss/base';
+@import 'reset';
+
+/* Components */
+@import 'tailwindcss/components';
+@import 'buttons';
+@import 'form';
+
+/* Utilities */
+@import 'tailwindcss/utilities';
+
+.ck-editor__editable {
+    min-height: 250px;
+}
