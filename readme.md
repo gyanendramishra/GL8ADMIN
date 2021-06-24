@@ -59,7 +59,7 @@ You're ready to go! Visit GL8ADMIN in your browser, and login with:
 
 ## Running tests
 
-To run the DS Admin  tests, run:
+To run the GL8ADMIN  tests, run:
 
 ```
 phpunit
