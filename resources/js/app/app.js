@@ -16,7 +16,7 @@ const el = document.getElementById('app')
 
 new Vue({
   metaInfo: {
-    titleTemplate: title => (title ? `${title} - DS Admin` : 'DS Admin'),
+    titleTemplate: title => (title ? `${title} - GL8ADMIN` : 'GL8ADMIN'),
   },
   render: h =>
     h(App, {

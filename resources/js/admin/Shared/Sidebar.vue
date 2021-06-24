@@ -3,7 +3,7 @@
   <!-- you will need to add a little "X" button next to the logo in order to close it though -->
   <div class="w-1/2 md:w-1/3 lg:w-64 fixed md:top-0 md:left-0 h-screen lg:block bg-current z-30 shadow" :class="sideBarOpen ? '' : 'hidden'" id="main-nav">
     <div class="w-full h-20 bg-indigo-600 flex px-4 items-center mb-2">
-      <p class="font-semibold text-3xl text-white pl-4">DS Admin</p>
+      <p class="font-semibold text-3xl text-white pl-4">GL8ADMIN</p>
     </div>
     <div class="mb-2 px-4">
       <p class="py-2 text-sm font-semibold text-indigo-400">MAIN</p>
