@@ -52,7 +52,7 @@ Run the dev server (the output will give the address):
 php artisan serve
 ```
 
-You're ready to go! Visit DS Admin in your browser, and login with:
+You're ready to go! Visit GL8ADMIN in your browser, and login with:
 
 - **Username:** gyanendra.kumar@dotsquares.com
 - **Password:** secret
