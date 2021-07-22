@@ -16,6 +16,7 @@
         "@inertiajs/inertia-vue": "^0.5.5",
         "@inertiajs/progress": "^0.2.4",
         "@popperjs/core": "^2.9.2",
+        "@tinymce/tinymce-vue": "^3.2.8",
         "autoprefixer": "^10.2.4",
         "chart.js": "^3.2.1",
         "eslint": "^6.8.0",

@@ -26,10 +26,10 @@ class ProfileRequest extends FormRequest
     {
         $id = Auth::guard('admin')->id();
         return [
-            'first_name' => 'bail|required|max:50',
-            'last_name' => 'bail|required|max:50',
-            'email' => 'bail|required|email|max:100|unique:users,email,'.$id.',id',
-            'phone' => 'bail|required|min:7|max:15||max:100|unique:users,phone,'.$id.',id',
+            'first_name' => 'bail|required|string|max:50',
+            'last_name' => 'bail|required|string|max:50',
+            'email' => 'bail|required|email|max:100|unique:users,email,' . $id . ',id',
+            'phone' => 'bail|required|min:7|max:15||max:100|unique:users,phone,' . $id . ',id',
             'photo' => 'bail|nullable|image'
         ];
     }
@@ -42,7 +42,7 @@ class ProfileRequest extends FormRequest
     public function messages()
     {
         return [
-            'photo.image'=>'The photo must be an image.',
+            'photo.image' => 'The photo must be an image.',
         ];
     }
 
@@ -57,5 +57,4 @@ class ProfileRequest extends FormRequest
             'photo' => 'photo'
         ];
     }
-
 }

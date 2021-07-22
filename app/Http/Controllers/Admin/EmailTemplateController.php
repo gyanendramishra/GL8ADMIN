@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Admin\EmailTemplateRequest;
 use App\Models\EmailTemplate;
-use App\Models\EmailHook;
-use App\Models\EmailLayout;
 use Inertia\Inertia;
+use Config;
 
 class EmailTemplateController extends Controller
 {
@@ -24,13 +22,12 @@ class EmailTemplateController extends Controller
             'filters' => Request::all('search', 'trashed'),
             'emailTemplates' => EmailTemplate::orderBySubject()
                 ->filter(Request::only('search', 'trashed'))
-                ->paginate()
+                ->paginate(Config::get('pagination.admin_per_page'))
                 ->withQueryString()
                 ->through(function ($emailTemplate) {
                     return [
                         'id' => $emailTemplate->id,
-                        'emailHook' => $emailTemplate->emailHook->name,
-                        'emailLayout' => $emailTemplate->emailLayout->name,
+                        'name' => $emailTemplate->name,
                         'subject' => $emailTemplate->subject,
                         'created_at' => $emailTemplate->created_at->format('M/d/Y')
                     ];
@@ -48,29 +45,13 @@ class EmailTemplateController extends Controller
         return Inertia::render('EmailTemplates/Edit', [
             'emailTemplate' => [
                 'id' => $emailTemplate->id,
-                'email_hook_id' => $emailTemplate->email_hook_id,
-                'email_layout_id' => $emailTemplate->email_layout_id,
+                'name' => $emailTemplate->name,
                 'subject' => $emailTemplate->subject,
-                'content' => $emailTemplate->content,
-            ],
-            'emailHooks' => EmailHook::isActive()
-                ->get()
-                ->transform(function ($emailHook) {
-                    return [
-                        'id' => $emailHook->id,
-                        'name' => $emailHook->name
-                    ];
-                }),
-            'emailLayouts' => EmailLayout::isActive()
-                ->get()
-                ->transform(function ($emailLayout) {
-                    return [
-                        'id' => $emailLayout->id,
-                        'name' => $emailLayout->name
-                    ];
-                })
+                'content' =>  $emailTemplate->content,
+            ]
         ]);
     }
+
     /**
      * Update the specified resource.
      * @param EmailTemplateRequest $request
@@ -79,12 +60,27 @@ class EmailTemplateController extends Controller
      */
     public function update(EmailTemplateRequest $request, EmailTemplate $emailTemplate)
     {
-        try{
-            $emailTemplate->update(Request::only('email_hook_id', 'email_layout_id', 'subject', 'content'));
+        try {
+            $emailTemplate->update(Request::only('subject', 'content'));
             return Redirect::route('admin.email-templates.index')->with('success', 'Email template has been updated updated successfully.');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return Redirect::route('admin.email-templates.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }
 
+    /**
+     * Preview the specified resource.
+     * @param Request $request
+     * @param EmailTemplate $emailTemplate
+     * @return Response
+     */
+    public function show(Request $request, EmailTemplate $emailTemplate)
+    {
+        try {
+            $user = \App\Models\User::inRandomOrder()->first();
+            return (new \App\Mails\Admin\PasswordChanged($user))->render();
+        } catch (\Exception $e) {
+            return Redirect::route('admin.email-templates.index')->with('error', 'Something went wrong. Please try again later.');
+        }
+    }
 }

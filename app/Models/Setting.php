@@ -15,7 +15,7 @@ class Setting extends Model
      * @var array
      */
     protected $fillable = [
-        'key', 
+        'key',
         'value',
     ];
 
@@ -49,7 +49,7 @@ class Setting extends Model
     public function scopeFilter(Builder $query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where('key', 'like', '%'.$search.'%');
+            $query->where('key', 'like', '%' . $search . '%');
         })->when($filters['trashed'] ?? null, function ($query, $trashed) {
             if ($trashed === 'with') {
                 $query->withTrashed();
@@ -58,5 +58,4 @@ class Setting extends Model
             }
         });
     }
-
 }

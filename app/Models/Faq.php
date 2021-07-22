@@ -85,7 +85,13 @@ class Faq extends Model
     public function scopeFilter(Builder $query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where('title', 'like', '%'.$search.'%');
+            $query->where('title', 'like', '%' . $search . '%');
+        })->when($filters['status'] ?? null, function ($query, $status) {
+            if ($status === 'active') {
+                $query->ofIsActive(self::ACTIVE);
+            } elseif ($status === 'in-active') {
+                $query->ofIsActive(self::IN_ACTIVE);
+            }
         })->when($filters['trashed'] ?? null, function ($query, $trashed) {
             if ($trashed === 'with') {
                 $query->withTrashed();
@@ -94,5 +100,4 @@ class Faq extends Model
             }
         });
     }
-
 }

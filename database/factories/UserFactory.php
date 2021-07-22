@@ -2,6 +2,7 @@
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,8 +21,9 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
         'last_name' => $faker->lastName,
         'email' => $faker->unique()->safeEmail,
         'phone' => $faker->tollFreePhoneNumber,
-        'password' => 'secret',
+        'password' => 'secret@12',
         'remember_token' => Str::random(10),
         'is_active' => true,
+        'created_at' => Carbon::now()->addWeeks(rand(1, 52))
     ];
 });

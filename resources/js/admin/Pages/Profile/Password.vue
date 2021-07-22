@@ -23,9 +23,9 @@
     <div class="bg-white rounded-md shadow overflow-hidden">
       <form @submit.prevent="update">
         <div class="p-5 -mr-5 -mb-2 flex flex-wrap">
-          <text-input v-model="form.old_password" type="password" :error="form.errors.old_password" class="pr-5 pb-2 w-full lg:w-3/5" label="Old password" />
-          <text-input v-model="form.new_password" type="password" :error="form.errors.new_password" class="pr-5 pb-2 w-full lg:w-3/5" label="New password" />
-          <text-input v-model="form.confirm_password" type="password" :error="form.errors.confirm_password" class="pr-5 pb-2 w-full lg:w-3/5" label="Confirm password" />
+          <text-input v-model="form.old_password" type="password" :error="form.errors.old_password" class="pr-5 pb-2 w-full lg:w-3/5" label="Old password" autofocus autocapitalize="off" />
+          <text-input v-model="form.new_password" type="password" :error="form.errors.new_password" class="pr-5 pb-2 w-full lg:w-3/5" label="New password" autofocus autocapitalize="off" />
+          <text-input v-model="form.confirm_password" type="password" :error="form.errors.confirm_password" class="pr-5 pb-2 w-full lg:w-3/5" label="Confirm password" autofocus autocapitalize="off" />
         </div>
         <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center">
           <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit">Save</loading-button>

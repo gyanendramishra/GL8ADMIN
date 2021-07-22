@@ -36,7 +36,8 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('guest:admin')->except('logout');
     }
 
@@ -56,7 +57,8 @@ class LoginController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $this->validateLogin($request);
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
@@ -73,14 +75,32 @@ class LoginController extends Controller
     }
 
     /**
+     * Validate the user login request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function validateLogin(Request $request)
+    {
+        $request->validate([
+            $this->username() => 'bail|required|email',
+            'password' => 'bail|required|string|min:8|max:12',
+        ]);
+    }
+
+
+    /**
      * Get the needed authorization credentials from the request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    protected function credentials(Request $request) {
+    protected function credentials(Request $request)
+    {
         $credentials = $request->only($this->username(), 'password');
-        $credentials['is_active']= 1;
+        $credentials['is_active'] = 1;
         return $credentials;
     }
 
@@ -91,14 +111,15 @@ class LoginController extends Controller
      * @param  string  $field
      * @return \Illuminate\Http\RedirectResponse
      */
-    protected function sendFailedLoginResponse(Request $request, $trans = 'auth.failed') {
+    protected function sendFailedLoginResponse(Request $request, $trans = 'auth.failed')
+    {
         $errors = [$this->username() => trans($trans)];
         if ($request->expectsJson()) {
             return response()->json($errors, 422);
         }
         return redirect()->back()
-                        ->withInput($request->only($this->username(), 'remember'))
-                        ->withErrors($errors);
+            ->withInput($request->only($this->username(), 'remember'))
+            ->withErrors($errors);
     }
 
     /**
@@ -106,8 +127,9 @@ class LoginController extends Controller
      *
      * @return object
      */
-    protected function guard(){
-         return Auth::guard('admin');
+    protected function guard()
+    {
+        return Auth::guard('admin');
     }
 
     /**
@@ -115,7 +137,8 @@ class LoginController extends Controller
      *
      * @return string
      */
-    public function username(){
+    public function username()
+    {
         return 'email';
     }
 
@@ -125,9 +148,11 @@ class LoginController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $this->guard()->logout($request);
         return redirect()
-                    ->route('admin.login');
+            ->route('admin.login')
+            ->with('success', 'Logout successfully.');
     }
 }

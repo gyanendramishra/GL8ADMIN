@@ -28,13 +28,12 @@ class PageRequest extends FormRequest
         $id = $this->id;
 
         return [
-            'title' => 'bail|required|max:100|unique:pages,title,'.$id.',id',
-            'excerpt' => 'bail|required|max:1000',
-            'content' => 'bail|required',
-            'meta_title' => 'bail|nullable|max:100',
-            'meta_keyword' => 'bail|nullable|max:100',
-            'meta_description' => 'bail|nullable|max:100',
+            'title' => 'bail|required|string|max:100|unique:pages,title,' . $id . ',id',
+            'excerpt' => 'bail|required|string|max:1000',
+            'content' => 'bail|string|required',
+            'meta_title' => 'bail|nullable|string|max:100',
+            'meta_keyword' => 'bail|nullable|string|max:100',
+            'meta_description' => 'bail|nullable|string|max:100',
         ];
     }
-
 }

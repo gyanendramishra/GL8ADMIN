@@ -1,6 +1,6 @@
 <template>
     <div class="sticky top-0 z-40">
-      <div class="w-full h-20 px-5 bg-indigo-600 flex items-center justify-between">
+      <div class="w-full h-20 px-5 bg-gradient-to-r from-gray-200 to-indigo-400 flex items-center justify-between">
         <!-- left navbar -->
         <div class="flex">
           <!-- mobile hamburger -->

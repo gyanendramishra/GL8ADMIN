@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Validation\Rule;
 use App\Models\Enquiry;
 use Inertia\Inertia;
+use Exception;
+use Config;
 
 class EnquiryController extends Controller
 {
@@ -19,10 +19,10 @@ class EnquiryController extends Controller
     public function index()
     {
         return Inertia::render('Enquiries/Index', [
-            'filters' => Request::all('search', 'trashed'),
+            'filters' => Request::all('search', 'status', 'trashed'),
             'enquiries' => Enquiry::orderByName()
-                ->filter(Request::only('search', 'trashed'))
-                ->paginate()
+                ->filter(Request::only('search', 'status', 'trashed'))
+                ->paginate(Config::get('pagination.admin_per_page'))
                 ->withQueryString()
                 ->through(function ($enquiry) {
                     return [
@@ -30,6 +30,7 @@ class EnquiryController extends Controller
                         'name' => $enquiry->name,
                         'email' => $enquiry->email,
                         'subject' => $enquiry->subject,
+                        'is_read' => $enquiry->is_read,
                         'created_at' => $enquiry->created_at->format('M/d/Y'),
                         'deleted_at' => $enquiry->deleted_at,
                     ];
@@ -44,6 +45,10 @@ class EnquiryController extends Controller
      */
     public function show(Enquiry $enquiry)
     {
+        if (!$enquiry->is_read) {
+            $enquiry->is_read = true;
+            $enquiry->save();
+        }
         return Inertia::render('Enquiries/Show', [
             'enquiry' => [
                 'id' => $enquiry->id,
@@ -65,9 +70,12 @@ class EnquiryController extends Controller
      */
     public function destroy(Enquiry $enquiry)
     {
-        $enquiry->delete();
-
-        return Redirect::back()->with('success', 'Enquiry deleted.');
+        try {
+            $enquiry->delete();
+            return Redirect::route('admin.enquiries.index')->with('success', 'Enquiry deleted.');
+        } catch (Exception $e) {
+            return Redirect::route('admin.enquiries.index')->with('error', 'Something  went wrong. Please try again later.');
+        }
     }
 
     /**
@@ -77,8 +85,11 @@ class EnquiryController extends Controller
      */
     public function restore(Enquiry $enquiry)
     {
-        $enquiry->restore();
-
-        return Redirect::back()->with('success', 'Enquiry restored.');
+        try {
+            $enquiry->restore();
+            return Redirect::route('admin.enquiries.index')->with('success', 'Enquiry restored.');
+        } catch (Exception $e) {
+            return Redirect::route('admin.enquiries.index')->with('error', 'Something  went wrong. Please try again later.');
+        }
     }
 }

@@ -22,6 +22,12 @@
     </div>
     <div class="mb-5 flex justify-between bg-gray-50 py-5 px-5 items-center border-b">
       <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">
+        <label class="block text-gray-700">Status:</label>
+        <select v-model="form.status" class="mt-1 w-full form-select">
+          <option :value="null">All</option>
+          <option value="active">Active</option>
+          <option value="in-active">In-Active</option>
+        </select>
         <label class="mt-4 block text-gray-700">Trashed:</label>
         <select v-model="form.trashed" class="mt-1 w-full form-select">
           <option :value="null">All</option>
@@ -113,6 +119,7 @@ export default {
     return {
       form: {
         search: this.filters.search,
+        status: this.filters.status,
         trashed: this.filters.trashed,
       },
     }

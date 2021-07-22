@@ -31,7 +31,7 @@
         <div class="p-5 -mr-5 -mb-2 flex flex-wrap">
           <text-input v-model="form.title" :error="form.errors.title" class="pr-5 pb-2 w-full" label="Title" />
           <textarea-input v-model="form.excerpt" :error="form.errors.excerpt" class="pr-5 pb-2 w-full" label="Excerpt" />
-          <editor-input v-model="form.content" :error="form.errors.content" class="pr-5 pb-2 w-full" label="Content" />
+          <tinymce-input v-model="form.content" :error="form.errors.content" class="pr-5 pb-2 w-full" label="Content" />
           <text-input v-model="form.meta_title" :error="form.errors.meta_title" class="pr-5 pb-2 w-full" label="Meta title" />
           <textarea-input v-model="form.meta_keyword" :error="form.errors.meta_keyword" class="pr-5 pb-2 w-full" label="Meta keywords" />
           <textarea-input v-model="form.meta_description" :error="form.errors.meta_description" class="pr-5 pb-2 w-full" label="Meta description" />
@@ -50,7 +50,7 @@
   import Layout from '@admin/Shared/Layout';
   import TextInput from '@admin/Shared/TextInput';
   import TextareaInput from '@admin/Shared/TextareaInput';
-  import EditorInput from '@admin/Shared/EditorInput';
+  import TinymceInput from '@admin/Shared/TinymceInput';
   import LoadingButton from '@admin/Shared/LoadingButton';
 
   export default {
@@ -63,7 +63,7 @@
       Icon,
       LoadingButton,
       TextInput,
-      EditorInput,
+      TinymceInput,
       TextareaInput,
     },
     layout: Layout,

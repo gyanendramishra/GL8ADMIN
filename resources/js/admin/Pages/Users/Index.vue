@@ -28,6 +28,12 @@
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
+        <label class="mt-4 block text-gray-700">Status:</label>
+        <select v-model="form.status" class="mt-1 w-full form-select">
+          <option :value="null">All</option>
+          <option value="active">Active</option>
+          <option value="in-active">In-active</option>
+        </select>
         <label class="mt-4 block text-gray-700">Trashed:</label>
         <select v-model="form.trashed" class="mt-1 w-full form-select">
           <option :value="null">All</option>
@@ -55,7 +61,7 @@
             <tr v-for="user in users.data" :key="user.id" class="border-b border-gray-200 hover:bg-gray-100">
               <td class="py-3 px-6 whitespace-nowrap">
                 <inertia-link :href="route('admin.users.edit', user.id)" class="flex items-center">
-                  <div class="flex-shrink-0 h-10 w-10" v-if="user.photo">
+                  <div v-if="user.photo" class="flex-shrink-0 h-10 w-10">
                     <img class="h-10 w-10 rounded-full" :src="user.photo" />
                   </div>
                   <div :class="user.photo ? 'ml-4' : ''">
@@ -97,7 +103,7 @@
                       <icon name="edit" class="text-indigo-400" />
                     </inertia-link>
                   </div>
-                  <div v-if="!user.deleted_at" class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110 cursor-pointer" @click="destroy(user)" title="Delete">
+                  <div v-if="!user.deleted_at" class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110 cursor-pointer" title="Delete" @click="destroy(user)">
                     <icon name="delete" class="text-indigo-400" />
                   </div>
                 </div>
@@ -142,6 +148,7 @@ export default {
       form: {
         search: this.filters.search,
         role: this.filters.role,
+        status: this.filters.status,
         trashed: this.filters.trashed,
       },
     }

@@ -26,9 +26,9 @@ class PasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'old_password'     => 'required|min:6|max:12',
-            'new_password'     => 'required|min:6|max:12',
-            'confirm_password' => 'required|same:new_password',
+            'old_password'     => 'bail|required|string|min:6|max:12',
+            'new_password'     => 'bail|required|string|min:6|max:12',
+            'confirm_password' => 'bail|required|string|same:new_password',
         ];
     }
 
@@ -42,14 +42,13 @@ class PasswordRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if(strcmp($this->old_password, $this->new_password) == 0){
+            if (strcmp($this->old_password, $this->new_password) == 0) {
                 $validator->errors()->add('new_password', 'New Password cannot be same as your old password. Please choose a different password.');
             }
             $user = Auth::guard('admin')->user();
-            if(!Hash::check($this->old_password, $user->password)){
+            if (!Hash::check($this->old_password, $user->password)) {
                 $validator->errors()->add('old_password', 'The old password is incorrect.');
             }
         });
     }
-
 }

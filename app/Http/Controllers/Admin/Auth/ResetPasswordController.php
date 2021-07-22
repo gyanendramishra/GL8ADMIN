@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Admin\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Auth;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Auth\ResetsPasswords;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mails\Admin\PasswordChanged;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class ResetPasswordController extends Controller
 {
@@ -53,7 +55,7 @@ class ResetPasswordController extends Controller
      */
     public function showResetForm(Request $request, $token = null)
     {
-        return Inertia::render('Auth/ForgotPassword', ['token' => $token]);
+        return Inertia::render('Auth/ResetPassword', ['token' => $token]);
     }
 
     /**
@@ -69,11 +71,17 @@ class ResetPasswordController extends Controller
         $response = $this->broker()->reset(
             $this->credentials($request), function ($user, $password) {
                 $this->resetPassword($user, $password);
+                // Send mail to user
+                try{
+                    Mail::to($user)->send(new PasswordChanged($user));
+                }catch(\Exception $e){
+                    \Log::info("User:: password changed email not sent");
+                }
             }
         );
-
+        
         return $response == Password::PASSWORD_RESET
-                    ? $this->sendResetResponse($response)
+                    ? $this->sendResetResponse($request, $response)
                     : $this->sendResetFailedResponse($request, $response);
     }
 
@@ -107,7 +115,7 @@ class ResetPasswordController extends Controller
         return [
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|max:12|confirmed',
         ];
     }
 

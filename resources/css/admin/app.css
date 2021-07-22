@@ -11,5 +11,32 @@
 @import 'tailwindcss/utilities';
 
 .ck-editor__editable {
-    min-height: 250px;
+  min-height: 250px;
+}
+.swal-text {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity));
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+}
+
+/*Loader CSS*/
+#nprogress .spinner {
+  position: fixed;
+  z-index: 1031;
+  top: 50% !important;
+  right: 0 !important;
+  left: 0 !important;
+  margin: auto;
+  transform: translateY(-50%);
+  width: 30px;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  height: 30px;
+  text-align: center;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ForgotPasswordController extends Controller
@@ -65,12 +65,12 @@ class ForgotPasswordController extends Controller
     {
         $this->validate($request, ['email' => 'required|email|exists:users,email,is_active,1']);
 
-        $response = $this->broker()->sendResetLink(
+        $status = Password::sendResetLink(
             $request->only('email')
         );
         
         return $status === Password::RESET_LINK_SENT
-                ? back()->with(['status' => __($status)])
+                ? back()->withSuccess(__($status))
                 : back()->withErrors(['email' => __($status)]);
     }
 

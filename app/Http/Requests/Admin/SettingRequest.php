@@ -26,12 +26,12 @@ class SettingRequest extends FormRequest
     public function rules()
     {
         return [
-            'app_name' => 'bail|required|max:100',
-            'business_email' => 'bail|nullable|email|max:100',
+            'app_name' => 'bail|required|string|max:100',
+            'business_email' => 'bail|nullable|string|email|max:100',
             'business_phone' => 'bail|nullable|max:100',
-            'business_address' => 'bail|nullable|max:100',
+            'business_address' => 'bail|nullable|string|max:100',
             'from_email' => 'bail|required|email|max:100',
-            'email_from_name' => 'bail|required|max:100',
+            'email_from_name' => 'bail|required|string|max:100',
             'facebook_url' => 'bail|nullable|url|max:100',
             'twitter_url' => 'bail|nullable|url|max:100',
             'linkedin_url' => 'bail|nullable|url|max:100',
@@ -40,5 +40,4 @@ class SettingRequest extends FormRequest
             'favicon' => 'bail|nullable|image',
         ];
     }
-
 }

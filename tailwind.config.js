@@ -20,6 +20,8 @@ module.exports = {
       yellow: colors.yellow,
       green: colors.green,
       gray: colors.blueGray,
+      purple: colors.purple,
+      blue: colors.blue,
       indigo: {
         100: '#e6e8ff',
         300: '#b2b7ff',
@@ -46,6 +48,7 @@ module.exports = {
   variants: {
     extend: {
       fill: ['focus', 'group-hover'],
+      appearance: ['hover', 'focus'],
     },
   },
   plugins: [],

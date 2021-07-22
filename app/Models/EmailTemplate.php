@@ -15,10 +15,10 @@ class EmailTemplate extends Model
      * @var array
      */
     protected $fillable = [
-        'email_hook_id',
-        'email_layout_id',
+        'name',
         'subject',
-        'content'
+        'content',
+        'slug'
     ];
 
     /**
@@ -38,7 +38,7 @@ class EmailTemplate extends Model
      */
     public function scopeOrderBySubject(Builder $query)
     {
-        $query->orderBy('subject');
+        $query->orderBy('name');
     }
 
     /**
@@ -51,7 +51,8 @@ class EmailTemplate extends Model
     public function scopeFilter(Builder $query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where('subject', 'like', '%'.$search.'%');
+            $query->where('name', 'like', '%'.$search.'%');
+            $query->orWhere('subject', 'like', '%'.$search.'%');
         })->when($filters['trashed'] ?? null, function ($query, $trashed) {
             if ($trashed === 'with') {
                 $query->withTrashed();
@@ -59,22 +60,6 @@ class EmailTemplate extends Model
                 $query->onlyTrashed();
             }
         });
-    }
-
-    /**
-     * Get the email hook that owns the email template.
-     */
-    public function emailHook()
-    {
-        return $this->belongsTo(\App\Models\EmailHook::class);
-    }
-
-    /**
-     * Get the email layout that owns the email template.
-     */
-    public function emailLayout()
-    {
-        return $this->belongsTo(\App\Models\EmailLayout::class);
     }
 
 }

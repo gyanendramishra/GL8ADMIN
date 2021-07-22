@@ -28,27 +28,27 @@ class FaqRequest extends FormRequest
         $id = $this->id;
 
         switch ($this->method()) {
-            case 'GET':{
-                return [];
-            }
+            case 'GET': {
+                    return [];
+                }
             case 'DELETE': {
                     return [];
-            }
+                }
             case 'POST': {
-                return [
-                    'title' => 'bail|required|max:100|unique:faqs,title',
-                    'description' => 'bail|required|max:1000',
-                ];
-            }
+                    return [
+                        'title' => 'bail|required|string|max:100|unique:faqs,title',
+                        'description' => 'bail|required|string|max:1000',
+                    ];
+                }
             case 'PUT':
             case 'PATCH': {
-                return [
-                    'title' => 'bail|required|max:100|unique:faqs,title,'.$id.',id',
-                    'description' => 'bail|required|max:1000',
-                ];
-            }
-            default:break;
+                    return [
+                        'title' => 'bail|required|string|max:100|unique:faqs,title,' . $id . ',id',
+                        'description' => 'bail|required|string|max:1000',
+                    ];
+                }
+            default:
+                break;
         }
     }
-
 }

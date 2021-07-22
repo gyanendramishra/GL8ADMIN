@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Admin\PageRequest;
 use Inertia\Inertia;
 use App\Models\Page;
+use Config;
 
 class PageController extends Controller
 {
@@ -22,7 +23,7 @@ class PageController extends Controller
             'filters' => Request::all('search', 'trashed'),
             'pages' => Page::orderByTitle()
                 ->filter(Request::only('search', 'trashed'))
-                ->paginate()
+                ->paginate(Config::get('pagination.admin_per_page'))
                 ->withQueryString()
                 ->through(function ($page) {
                     return [

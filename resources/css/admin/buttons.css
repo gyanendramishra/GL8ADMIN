@@ -21,6 +21,49 @@
   animation: spinning 1s infinite linear;
 }
 
+.swal-button {
+  border-radius: 0.25rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  line-height: 1rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+  white-space: nowrap;
+  --tw-bg-opacity: 1;
+  background-color: rgba(120, 134, 215, var(--tw-bg-opacity));
+}
+.swal-button:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(251, 146, 60, var(--tw-bg-opacity));
+}
+.swal-button:not([disabled]):hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(251, 146, 60, var(--tw-bg-opacity));
+}
+.swal-button:focus {
+  --tw-bg-opacity: 1;
+  background-color: rgba(251, 146, 60, var(--tw-bg-opacity));
+  box-shadow: none;
+}
+.swal-button.swal-button--confirm {
+  --tw-bg-opacity: 0.9;
+  background-color: rgba(120, 134, 215, var(--tw-bg-opacity));
+}
+.swal-button.swal-button--cancel {
+  background-color: rgba(120, 134, 215, var(--tw-bg-opacity));
+}
+.swal-button.swal-button--confirm:focus {
+  box-shadow: none;
+}
+.swal-button.swal-button--cancel:focus {
+  box-shadow: none;
+}
+
 @keyframes spinning {
   0% {
     transform: rotate(0deg);

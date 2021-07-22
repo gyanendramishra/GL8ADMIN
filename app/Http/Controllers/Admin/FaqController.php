@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Admin\FaqRequest;
 use Inertia\Inertia;
 use App\Models\Faq;
+use Config;
 
 class FaqController extends Controller
 {
@@ -19,10 +20,10 @@ class FaqController extends Controller
     public function index()
     {
         return Inertia::render('Faqs/Index', [
-            'filters' => Request::all('search', 'trashed'),
+            'filters' => Request::all('search', 'status', 'trashed'),
             'faqs' => Faq::orderByTitle()
-                ->filter(Request::only('search', 'trashed'))
-                ->paginate()
+                ->filter(Request::only('search', 'status', 'trashed'))
+                ->paginate(Config::get('pagination.admin_per_page'))
                 ->withQueryString()
                 ->through(function ($faq) {
                     return [
@@ -52,13 +53,13 @@ class FaqController extends Controller
      */
     public function store(FaqRequest $request)
     {
-        try{
+        try {
             Faq::create([
                 'title' => Request::get('title'),
                 'description' => Request::get('description'),
             ]);
             return Redirect::route('admin.faqs.index')->with('success', 'Faq has been created successfully.');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return Redirect::route('admin.faqs.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -88,10 +89,10 @@ class FaqController extends Controller
      */
     public function update(FaqRequest $request, Faq $faq)
     {
-        try{
+        try {
             $faq->update(Request::only('title', 'description'));
             return Redirect::route('admin.users.index')->with('success', 'Faq has been updated updated successfully.');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return Redirect::route('admin.faqs.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -103,10 +104,10 @@ class FaqController extends Controller
      */
     public function destroy(Faq $faq)
     {
-        try{
+        try {
             $faq->delete();
             return Redirect::route('admin.users.index')->with('success', 'Faq has been deleted successfully.');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return Redirect::route('admin.faqs.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -118,10 +119,10 @@ class FaqController extends Controller
      */
     public function restore(Faq $faq)
     {
-        try{
+        try {
             $faq->restore();
             return Redirect::route('admin.users.index')->with('success', 'Faq has been successfully restored.');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return Redirect::route('admin.faqs.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -133,11 +134,11 @@ class FaqController extends Controller
      */
     public function toggleStatus(Faq $faq)
     {
-        try{
+        try {
             $faq->is_active = $faq->is_active ? Faq::IN_ACTIVE : Faq::ACTIVE;
             $faq->save();
             return Redirect::route('admin.faqs.index')->with('success', 'Faq status has been successfully updated.');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return Redirect::route('admin.faqs.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }

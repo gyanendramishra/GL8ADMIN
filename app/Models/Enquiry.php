@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -8,6 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Enquiry extends Model
 {
     use SoftDeletes;
+
+    const READ = 1;
+    const UN_READ = 0;
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +23,8 @@ class Enquiry extends Model
         'email',
         'phone',
         'subject',
-        'message'
+        'message',
+        'is_read'
     ];
 
     /**
@@ -29,6 +34,15 @@ class Enquiry extends Model
      */
     protected $dates = [
         'deleted_at'
+    ];
+
+    /**
+     * The attributes casts.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_read' => 'boolean',
     ];
 
     /**
@@ -53,9 +67,9 @@ class Enquiry extends Model
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%'.$search.'%')
-                    ->orWhere('email', 'like', '%'.$search.'%')
-                    ->orWhere('phone', 'like', '%'.$search.'%');
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%');
             });
         })->when($filters['trashed'] ?? null, function ($query, $trashed) {
             if ($trashed === 'with') {
@@ -63,6 +77,35 @@ class Enquiry extends Model
             } elseif ($trashed === 'only') {
                 $query->onlyTrashed();
             }
+        })->when($filters['status'] ?? null, function ($query, $status) {
+            if ($status === 'read') {
+                $query->ofIsRead(self::READ);
+            } elseif ($status === 'unread') {
+                $query->ofIsRead(self::UN_READ);
+            }
         });
+    }
+
+    /**
+     * Scope a query to only include read enquiries.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsRead($query)
+    {
+        return $query->whereIsRead(self::READ);
+    }
+
+    /**
+     * Scope a query to only include enquiries of a given type.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  mixed $type
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOfIsRead($query, $type)
+    {
+        return $query->whereIsRead($type);
     }
 }

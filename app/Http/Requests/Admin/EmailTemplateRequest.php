@@ -28,11 +28,8 @@ class EmailTemplateRequest extends FormRequest
         $id = $this->id;
 
         return [
-            'email_hook_id' => 'bail|required',
-            'email_layout_id' => 'bail|required',
-            'subject' => 'bail|required|max:100',
-            'content' => 'bail|required'
+            'subject' => 'bail|required|string|max:100',
+            'content' => 'bail|required|string'
         ];
     }
-
 }

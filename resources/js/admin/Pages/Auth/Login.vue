@@ -2,12 +2,13 @@
   <div class="p-6 bg-indigo-800 min-h-screen flex justify-center items-center">
     <div class="w-full max-w-md">
       <!-- <logo class="block mx-auto w-full max-w-xs fill-white" height="50" /> -->
+      <flash-messages />
       <form class="mt-8 bg-white rounded-lg shadow-xl overflow-hidden" @submit.prevent="login">
         <div class="px-10 py-12">
           <h1 class="text-center font-bold text-3xl">Welcome Back!</h1>
           <div class="mx-auto mt-5 w-24 border-b-2" />
           <text-input v-model="form.email" :error="form.errors.email" class="mt-5" label="Email" type="email" autofocus autocapitalize="off" />
-          <text-input v-model="form.password" :error="form.errors.password" class="mt-2" label="Password" type="password" />
+          <text-input v-model="form.password" :error="form.errors.password" class="mt-2" label="Password" type="password" autofocus autocapitalize="off" />
           <label class="mt-2 select-none flex items-center" for="remember">
             <input id="remember" v-model="form.remember" class="mr-1" type="checkbox" />
             <span class="text-sm">Remember Me</span>
@@ -25,9 +26,10 @@
 </template>
 
 <script>
-import Logo from '@admin/Shared/Logo'
-import TextInput from '@admin/Shared/TextInput'
-import LoadingButton from '@admin/Shared/LoadingButton'
+import Logo from '@admin/Shared/Logo';
+import TextInput from '@admin/Shared/TextInput';
+import LoadingButton from '@admin/Shared/LoadingButton';
+import FlashMessages from '@admin/Shared/FlashMessages';
 
 export default {
   metaInfo: { title: 'Login' },
@@ -35,6 +37,7 @@ export default {
     LoadingButton,
     Logo,
     TextInput,
+    FlashMessages
   },
   data() {
     return {

@@ -15,10 +15,10 @@ class CreateEmailTemplatesTable extends Migration
     {
         Schema::create('email_templates', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('email_hook_id')->index();
-            $table->integer('email_layout_id')->index();
+            $table->string('name', 50);
             $table->string('subject', 100);
             $table->text('content');
+            $table->string('slug', 100)->unique();
             $table->timestamps();
             $table->softDeletes();
         });

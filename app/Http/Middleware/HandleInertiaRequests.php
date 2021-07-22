@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Symfony\Component\Yaml\Yaml;
+use Illuminate\Support\Facades\Storage;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -53,12 +55,13 @@ class HandleInertiaRequests extends Middleware
                     ] : null,
                 ];
             },
+            'settings' => Yaml::parse(Storage::disk('local')->get('settings.yml')),
             'flash' => function () use ($request) {
                 return [
                     'success' => $request->session()->get('success'),
                     'error' => $request->session()->get('error'),
                 ];
-            },
+            }
         ]);
     }
 }

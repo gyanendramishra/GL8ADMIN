@@ -2,6 +2,7 @@
   <div class="p-6 bg-indigo-800 min-h-screen flex justify-center items-center">
     <div class="w-full max-w-md">
       <!-- <logo class="block mx-auto w-full max-w-xs fill-white" height="50" /> -->
+      <flash-messages />
       <form class="mt-8 bg-white rounded-lg shadow-xl overflow-hidden" @submit.prevent="sendResetPasswordEmail">
         <div class="px-10 py-12">
           <h1 class="text-center font-bold text-3xl">Forgot Password</h1>
@@ -21,6 +22,7 @@
 import Logo from '@admin/Shared/Logo';
 import TextInput from '@admin/Shared/TextInput';
 import LoadingButton from '@admin/Shared/LoadingButton';
+import FlashMessages from '@admin/Shared/FlashMessages';
 
 export default {
   metaInfo: { title: 'Forgot Password' },
@@ -28,6 +30,7 @@ export default {
     LoadingButton,
     Logo,
     TextInput,
+    FlashMessages
   },
   data() {
     return {
@@ -42,7 +45,9 @@ export default {
         .transform(data => ({
           ...data
         }))
-        .post(this.route('admin.password.email'))
+        .post(this.route('admin.password.email'), {
+          onSuccess: () => this.form.reset('email'),
+        })
     },
   },
 }

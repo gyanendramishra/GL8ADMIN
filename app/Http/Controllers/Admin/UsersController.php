@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\Admin\UserRequest;
+use Config;
+use Exception;
 use Inertia\Inertia;
 use App\Models\User;
 use App\Models\Role;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\Admin\UserRequest;
+use App\Mails\Admin\NewUserRegistered;
+use App\Mails\Admin\AccountActivated;
+use App\Mails\Admin\AccountDeActivated;
 
 class UsersController extends Controller
 {
@@ -21,11 +27,10 @@ class UsersController extends Controller
     public function index()
     {
         return Inertia::render('Users/Index', [
-            'filters' => Request::all('search', 'role', 'trashed'),
-            'users' => Auth::user()
-                ->orderByName()
-                ->filter(Request::only('search', 'role', 'trashed'))
-                ->paginate()
+            'filters' => Request::all('search', 'role', 'status', 'trashed'),
+            'users' => User::orderByName()
+                ->filter(Request::only('search', 'role', 'status', 'trashed'))
+                ->paginate(Config::get('pagination.admin_per_page'))
                 ->withQueryString()
                 ->through(function ($user) {
                     return [
@@ -50,7 +55,7 @@ class UsersController extends Controller
     public function create()
     {
         return Inertia::render('Users/Create', [
-            'roles'=> Role::isActive()
+            'roles' => Role::isActive()
                 ->get()
                 ->transform(function ($role) {
                     return [
@@ -68,8 +73,8 @@ class UsersController extends Controller
      */
     public function store(UserRequest $request)
     {
-        \DB::beginTransaction();
-        try{
+        DB::beginTransaction();
+        try {
             $user = User::create([
                 'first_name' => Request::get('first_name'),
                 'last_name' => Request::get('last_name'),
@@ -79,17 +84,21 @@ class UsersController extends Controller
             ]);
             // Attach role with user
             $user->roles()->attach(Request::get('role'));
-            $token = app('auth.password.broker')->createToken($user);
-            try{
-                //\Mail::to($user->email)->send(new ResetPasswordMail($user, $token));
-            }catch(\Exception $e){
-                \Log::info("User:: welcome email not sent");
+
+            // Uncomment this if want to receive password reset link and pass the token mail template and reeceive it.
+            //$token = app('auth.password.broker')->createToken($user);
+
+            // Send mail to user
+            try {
+                Mail::to($user)->send(new NewUserRegistered($user));
+            } catch (\Exception $e) {
+                Log::info("User:: welcome email not sent");
             }
             // Db commit
-            \DB::commit();
+            DB::commit();
             return Redirect::route('admin.users.index')->with('success', 'User has been created successfully.');
-        }catch(\Exception $e){
-            \DB::rollBack();
+        } catch (Exception $e) {
+            DB::rollBack();
             return Redirect::route('admin.users.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -112,7 +121,7 @@ class UsersController extends Controller
                 'photo' => $user->photoUrl(['w' => 60, 'h' => 60, 'fit' => 'crop']),
                 'deleted_at' => $user->deleted_at,
             ],
-            'roles'=> Role::isActive()
+            'roles' => Role::isActive()
                 ->get()
                 ->transform(function ($role) {
                     return [
@@ -130,8 +139,8 @@ class UsersController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        \DB::beginTransaction();
-        try{
+        DB::beginTransaction();
+        try {
             $user->update(Request::only('first_name', 'last_name', 'email', 'phone'));
             if (Request::file('photo')) {
                 $user->update(['photo_path' => Request::file('photo')->store('users')]);
@@ -139,10 +148,10 @@ class UsersController extends Controller
             // Sync role with user
             $user->roles()->sync($request->role);
             // Db commit
-            \DB::commit();
+            DB::commit();
             return Redirect::route('admin.users.index')->with('success', 'User has been updated updated successfully.');
-        }catch(\Exception $e){
-            \DB::rollBack();
+        } catch (Exception $e) {
+            DB::rollBack();
             return Redirect::route('admin.users.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -154,10 +163,10 @@ class UsersController extends Controller
      */
     public function destroy(User $user)
     {
-        try{
+        try {
             $user->delete();
             return Redirect::route('admin.users.index')->with('success', 'User has been deleted successfully.');
-        }catch(\Exception $e){
+        } catch (Exception $e) {
             return Redirect::route('admin.users.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -169,10 +178,10 @@ class UsersController extends Controller
      */
     public function restore(User $user)
     {
-        try{
+        try {
             $user->restore();
             return Redirect::route('admin.users.index')->with('success', 'User has been successfully restored.');
-        }catch(\Exception $e){
+        } catch (Exception $e) {
             return Redirect::route('admin.users.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -184,11 +193,22 @@ class UsersController extends Controller
      */
     public function toggleStatus(User $user)
     {
-        try{
+        try {
             $user->is_active = $user->is_active ? User::IN_ACTIVE : User::ACTIVE;
             $user->save();
+            $user->refresh();
+
+            try {
+                if ($user->is_active == User::ACTIVE) {
+                    Mail::to($user)->send(new AccountActivated($user));
+                } else {
+                    Mail::to($user)->send(new AccountDeActivated($user));
+                }
+            } catch (\Exception $e) {
+                Log::info("User:: welcome email not sent");
+            }
             return Redirect::route('admin.users.index')->with('success', 'User status has been successfully updated.');
-        }catch(\Exception $e){
+        } catch (Exception $e) {
             return Redirect::route('admin.users.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }

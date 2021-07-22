@@ -34,8 +34,7 @@
       <table class="w-full whitespace-nowrap text-left">
         <thead>
           <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-            <th class="py-3 px-6">Hook</th>
-            <th class="py-3 px-6">Layout</th>
+            <th class="py-3 px-6">Name</th>
             <th class="py-3 px-6">Subject</th>
             <th class="py-3 px-6">Date</th>
             <th class="py-3 px-6 text-center">Actions</th>
@@ -44,10 +43,7 @@
         <tbody class="text-gray-600 text-sm font-light">
             <tr v-for="emailTemplate in emailTemplates.data" :key="emailTemplate.id" class="border-b border-gray-200 hover:bg-gray-100">
               <td class="py-3 px-6">
-                <span class="text-sm font-medium text-gray-900">{{ emailTemplate.emailHook }}</span>
-              </td>
-              <td class="py-3 px-6">
-                <span class="text-sm font-medium text-gray-900">{{ emailTemplate.emailLayout }}</span>
+                <span class="text-sm font-medium text-gray-900">{{ emailTemplate.name }}</span>
               </td>
               <td class="py-3 px-6 whitespace-nowrap">
                 <inertia-link :href="route('admin.email-templates.edit', emailTemplate.id)" class="flex items-center">

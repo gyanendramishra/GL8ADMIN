@@ -22,6 +22,12 @@
     </div>
     <div class="mb-5 flex justify-between bg-gray-50 py-5 px-5 items-center border-b">
       <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">
+        <label class="block text-gray-700">Status:</label>
+        <select v-model="form.status" class="mt-1 w-full form-select">
+          <option :value="null">All</option>
+          <option value="read">Read</option>
+          <option value="unread">Unread</option>
+        </select>
         <label class="block text-gray-700">Trashed:</label>
         <select v-model="form.trashed" class="mt-1 w-full form-select">
           <option :value="null">All</option>
@@ -37,6 +43,7 @@
             <th class="py-3 px-6">Name</th>
             <th class="py-3 px-6">Subject</th>
             <th class="py-3 px-6">Date</th>
+            <th class="py-3 px-6">Status</th>
             <th class="py-3 px-6 text-center">Actions</th>
           </tr>
         </thead>
@@ -59,6 +66,14 @@
               </td>
               <td class="py-3 px-6">
                 <span>{{ enquiry.created_at }}</span>
+              </td>
+              <td class="py-3 px-6">
+                <span v-if="enquiry.is_read" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 cursor-pointer">
+                  Read
+                </span>
+                <span v-else class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-green-800 cursor-pointer">
+                  Unread
+                </span>
               </td>
               <td class="py-3 px-6">
                 <div class="flex item-center justify-center">
@@ -111,6 +126,7 @@ export default {
     return {
       form: {
         search: this.filters.search,
+        status: this.filters.status,
         trashed: this.filters.trashed,
       }
     }
@@ -119,7 +135,7 @@ export default {
     form: {
       handler: throttle(function() {
         let query = pickBy(this.form)
-        this.$inertia.replace(this.route('admin.enquiries.index', query))
+        this.$inertia.replace(this.route('admin.enquiries.index', Object.keys(query).length ? query : { remember: 'forget' }))
       }, 150),
       deep: true,
     },

@@ -55,11 +55,11 @@ php artisan serve
 You're ready to go! Visit GL8ADMIN in your browser, and login with:
 
 - **Username:** gyanendra.kumar@dotsquares.com
-- **Password:** secret
+- **Password:** secret@12
 
 ## Running tests
 
-To run the GL8ADMIN  tests, run:
+To run the GL8ADMIN tests, run:
 
 ```
 phpunit

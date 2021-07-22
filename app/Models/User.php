@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Auth\Authenticatable;
-use \Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword;
-use Illuminate\Auth\Notifications\ResetPassword; 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use \Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use League\Glide\Server;
+use Illuminate\Support\Facades\Mail;
+use App\Mails\Admin\ResetPassword;
 
 class User extends Model implements CanResetPassword, AuthenticatableContract, AuthorizableContract
 {
@@ -31,8 +32,8 @@ class User extends Model implements CanResetPassword, AuthenticatableContract, A
      * @var array
      */
     protected $fillable = [
-        'first_name', 
-        'last_name', 
+        'first_name',
+        'last_name',
         'email',
         'phone',
         'photo_path',
@@ -45,7 +46,7 @@ class User extends Model implements CanResetPassword, AuthenticatableContract, A
      * @var array
      */
     protected $hidden = [
-        'password', 
+        'password',
         'remember_token',
     ];
 
@@ -74,7 +75,7 @@ class User extends Model implements CanResetPassword, AuthenticatableContract, A
      */
     public function getNameAttribute()
     {
-        return $this->first_name.' '.$this->last_name;
+        return $this->first_name . ' ' . $this->last_name;
     }
 
     /**
@@ -156,14 +157,20 @@ class User extends Model implements CanResetPassword, AuthenticatableContract, A
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('first_name', 'like', '%'.$search.'%')
-                    ->orWhere('last_name', 'like', '%'.$search.'%')
-                    ->orWhere('email', 'like', '%'.$search.'%');
+                $query->where('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('last_name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
             });
         })->when($filters['role'] ?? null, function ($query, $role) {
-            $query->whereHas('roles', function($query) use($role) {
+            $query->whereHas('roles', function ($query) use ($role) {
                 return $query->where('name', $role);
             });
+        })->when($filters['status'] ?? null, function ($query, $status) {
+            if ($status === 'active') {
+                $query->ofIsActive(self::ACTIVE);
+            } elseif ($status === 'in-active') {
+                $query->ofIsActive(self::IN_ACTIVE);
+            }
         })->when($filters['trashed'] ?? null, function ($query, $trashed) {
             if ($trashed === 'with') {
                 $query->withTrashed();
@@ -188,7 +195,8 @@ class User extends Model implements CanResetPassword, AuthenticatableContract, A
      *
      * @return string
      */
-    public function getEmailForPasswordReset(){
+    public function getEmailForPasswordReset()
+    {
         return $this->email;
     }
 
@@ -200,7 +208,6 @@ class User extends Model implements CanResetPassword, AuthenticatableContract, A
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetPassword($token));
+        Mail::to($this)->send(new ResetPassword($this, $token));
     }
-
 }

@@ -88,7 +88,7 @@ export default {
           from_email: this.settings.from_email,
           email_from_name: this.settings.email_from_name,
           facebook_url: this.settings.facebook_url,
-          twitter_url: this.settings.facebook_url,
+          twitter_url: this.settings.twitter_url,
           linkedin_url: this.settings.linkedin_url,
           youtube_url: this.settings.youtube_url,
           logo: null,

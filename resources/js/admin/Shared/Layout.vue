@@ -17,27 +17,27 @@
   </div>
 </template>
 <script>
-  import { mapState } from 'vuex';
-  import Navbar from "@admin/Shared/Navbar.vue";
-  import Sidebar from "@admin/Shared/Sidebar.vue";
-  import Footer from '@admin/Shared/Footer.vue';
-  import FlashMessages from '@admin/Shared/FlashMessages';
+import { mapState } from 'vuex'
+import Navbar from '@admin/Shared/Navbar.vue'
+import Sidebar from '@admin/Shared/Sidebar.vue'
+import Footer from '@admin/Shared/Footer.vue'
+import FlashMessages from '@admin/Shared/FlashMessages'
 
-  export default {
-    name: "dashboard-page",
-    components: {
-      Navbar,
-      Sidebar,
-      Footer,
-      FlashMessages
-    },
-    data() {
-      return {
-        date: new Date().getFullYear()
-      }
-    },
-    computed: {
-      ...mapState(['sideBarOpen'])
+export default {
+  name: 'dashboard-page',
+  components: {
+    Navbar,
+    Sidebar,
+    Footer,
+    FlashMessages,
+  },
+  data() {
+    return {
+      date: new Date().getFullYear(),
     }
-  };
+  },
+  computed: {
+    ...mapState(['sideBarOpen']),
+  },
+}
 </script>

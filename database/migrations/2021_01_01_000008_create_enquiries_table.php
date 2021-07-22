@@ -20,6 +20,7 @@ class CreateEnquiriesTable extends Migration
             $table->string('phone', 50)->nullable();
             $table->string('subject', 150);
             $table->text('message', 1000);
+            $table->boolean('is_read')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

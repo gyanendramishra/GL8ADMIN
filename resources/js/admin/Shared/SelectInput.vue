@@ -1,7 +1,7 @@
 <template>
   <div>
     <label v-if="label" class="form-label text-sm font-semibold" :for="id">{{ label }}:</label>
-    <select :id="id" ref="input" v-model="selected" v-bind="$attrs" class="form-select" :class="{ error: error }">
+    <select :id="id" ref="input" v-model="selected" v-bind="$attrs" class="form-select focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-transparent" :class="{ error: error }">
       <slot />
     </select>
     <div v-if="error" class="form-error">{{ error }}</div>

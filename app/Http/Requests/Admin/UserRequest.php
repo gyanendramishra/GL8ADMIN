@@ -28,34 +28,35 @@ class UserRequest extends FormRequest
         $id = $this->id;
 
         switch ($this->method()) {
-            case 'GET':{
-                return [];
-            }
+            case 'GET': {
+                    return [];
+                }
             case 'DELETE': {
                     return [];
-            }
+                }
             case 'POST': {
-                return [
-                    'first_name' => 'bail|required|max:50',
-                    'last_name' => 'bail|required|max:50',
-                    'email' => 'bail|required|email|max:100|unique:users,email',
-                    'phone' => 'bail|required|min:7|max:15|unique:users,phone',
-                    'role' => 'bail|required',
-                    'photo' => 'bail|nullable|image'
-                ];
-            }
+                    return [
+                        'first_name' => 'bail|required|string|max:50',
+                        'last_name' => 'bail|required|string|max:50',
+                        'email' => 'bail|required|email|max:100|unique:users,email',
+                        'phone' => 'bail|required|min:7|max:15|unique:users,phone',
+                        'role' => 'bail|required',
+                        'photo' => 'bail|nullable|image'
+                    ];
+                }
             case 'PUT':
             case 'PATCH': {
-                return [
-                    'first_name' => 'bail|required|max:50',
-                    'last_name' => 'bail|required|max:50',
-                    'email' => 'bail|required|email|max:100|unique:users,email,'.$id.',id',
-                    'phone' => 'bail|required|min:7|max:15||max:100|unique:users,phone,'.$id.',id',
-                    'role' => 'bail|required',
-                    'photo' => 'bail|nullable|image'
-                ];
-            }
-            default:break;
+                    return [
+                        'first_name' => 'bail|required|string|max:50',
+                        'last_name' => 'bail|required|string|max:50',
+                        'email' => 'bail|required|email|max:100|unique:users,email,' . $id . ',id',
+                        'phone' => 'bail|required|min:7|max:15||max:100|unique:users,phone,' . $id . ',id',
+                        'role' => 'bail|required',
+                        'photo' => 'bail|nullable|image'
+                    ];
+                }
+            default:
+                break;
         }
     }
 
@@ -69,14 +70,14 @@ class UserRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if($this->hasFile('photo')){
+            if ($this->hasFile('photo')) {
                 if ($this->file('photo')->getSize() > '5242880') {
                     $validator->errors()->add('photo', 'Photo shouldn\'t be greater than 5 MB. Please select another photo.');
                 }
             }
         });
     }
-    
+
     /**
      * Get the validation messages that apply to the request.
      *
@@ -85,7 +86,7 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
-            'photo.image'=>'The photo must be an image.',
+            'photo.image' => 'The photo must be an image.',
         ];
     }
 

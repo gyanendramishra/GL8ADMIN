@@ -27,6 +27,7 @@
         "nunomaduro/collision": "^5.0",
         "phpunit/phpunit": "^9.3",
         "reinink/remember-query-strings": "^0.1.0",
+        "symfony/yaml": "^5.3",
         "tightenco/ziggy": "^0.8.0"
     },
     "config": {
@@ -70,5 +71,7 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
+    },
+    "require-dev": {
     }
 }

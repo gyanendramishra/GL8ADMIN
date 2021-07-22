@@ -45,48 +45,52 @@ Route::group(["prefix" => "admin", "as" => "admin."], function () {
     // Login routes
     Route::get('login', [LoginController::class, 'showLoginForm'])
         ->name('login')
-        ->middleware('guest');
+        ->middleware('guest:admin');
     Route::post('login', [LoginController::class, 'login'])
         ->name('login.attempt')
-        ->middleware('guest');
+        ->middleware('guest:admin');
 
     // Forgot password routes
     Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
         ->name('password.request')
-        ->middleware('guest');
+        ->middleware('guest:admin');
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
         ->name('password.email')
-        ->middleware('guest');
+        ->middleware('guest:admin');
 
     // Reset password routes
     Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
         ->name('password.reset')
-        ->middleware('guest');
-    Route::post('forgot-password', [ForgotPasswordController::class, 'reset'])
-        ->name('password.reset')
-        ->middleware('guest');
+        ->middleware('guest:admin');
+    Route::post('reset-password', [ResetPasswordController::class, 'reset'])
+        ->name('password.reset.attempt')
+        ->middleware('guest:admin');
 
     // Authenticated routes
-    Route::group(['middleware'=> 'auth:admin'], function(){
-        
+    Route::group(['middleware' => 'auth:admin'], function () {
+
         // Logout
         Route::post('logout', [LoginController::class, 'logout'])
-        ->name('logout');
+            ->name('logout');
         // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+            ->name('dashboard');
+        Route::get('/dashboard/user/statistics', [DashboardController::class, 'userStatistics'])
+            ->name('dashboard.user.statistics');
+        Route::get('/dashboard/enquiry/statistics', [DashboardController::class, 'enquiryStatistics'])
+            ->name('dashboard.enquiry.statistics');
 
         // Profile
         Route::get('profile', [ProfileController::class, 'index'])
-        ->name('profile');
+            ->name('profile');
         Route::put('profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
+            ->name('profile.update');
 
         // Password
         Route::get('password', [PasswordController::class, 'index'])
-        ->name('password');
+            ->name('password');
         Route::put('password', [PasswordController::class, 'update'])
-        ->name('password.update');
+            ->name('password.update');
 
         // Users
         Route::put('users/{user}/restore', [UsersController::class, 'restore'])
@@ -117,18 +121,17 @@ Route::group(["prefix" => "admin", "as" => "admin."], function () {
         // Email Templates
         Route::resource('email-templates', EmailTemplateController::class)
             ->except(['create', 'store']);
-        
+
         // Settings
         Route::get('settings', [SettingController::class, 'index'])
             ->name('settings');
         Route::put('settings', [SettingController::class, 'update'])
-        ->name('settings.update');
+            ->name('settings.update');
 
         // Reports
         Route::get('reports', [ReportsController::class, 'index'])
             ->name('reports');
     });
-    
 });
 
 // Images
@@ -136,7 +139,6 @@ Route::group(["prefix" => "admin", "as" => "admin."], function () {
 Route::get('/images/{path}', [ImagesController::class, 'show'])->where('path', '.*');
 
 // 500 error
-
 Route::get('500', function () {
     // Force debug mode for this endpoint in the demo environment
     if (App::environment('demo')) {

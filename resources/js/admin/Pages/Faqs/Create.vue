@@ -30,7 +30,7 @@
       <form @submit.prevent="store">
         <div class="p-5 -mr-5 -mb-2 flex flex-wrap">
           <text-input v-model="form.title" :error="form.errors.title" class="pr-5 pb-2 w-full lg:w-3/5" label="Title" />
-          <textarea-input v-model="form.description" :error="form.errors.description" class="pr-5 pb-2 w-full lg:w-3/5" label="Description" />
+          <textarea-input v-model="form.description" :error="form.errors.description" rows="8" class="pr-5 pb-2 w-full lg:w-3/5" label="Description" />
         </div>
         <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center">
           <inertia-link :href="route('admin.faqs.index')" class="text-red-600 hover:underline" tabindex="-1" type="button">Back</inertia-link>

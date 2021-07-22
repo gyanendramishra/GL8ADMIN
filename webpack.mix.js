@@ -31,8 +31,8 @@ mix
     require('tailwindcss'),
   ])
   .webpackConfig({
-    output: { 
-      chunkFilename: 'assets/chunks/[name].[contenthash].js?id=[chunkhash]' 
+    output: {
+      chunkFilename: 'assets/chunks/[name].js?id=[chunkhash]'
     },
     resolve: {
       alias: {
